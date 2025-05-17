@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>PSK-K Demo</title>
+</h:head>
+<h:body>
+
+    <h:messages id="msgs" globalOnly="true" layout="table"/>
+
+    <h:form id="cmdForm">
+        <h1>Commands</h1>
+        <h:dataTable value="#{commandBean.commands}" var="c" border="1">
+            <h:column>
+                <f:facet name="header">ID</f:facet>
+                #{c.id}
+            </h:column>
+            <h:column>
+                <f:facet name="header">Name</f:facet>
+                #{c.name}
+            </h:column>
+            <h:column>
+                <f:facet name="header">Ver</f:facet>
+                #{c.version}
+            </h:column>
+            <h:column>
+                <h:commandButton value="Edit"
+                                 action="#{commandBean.edit(c)}">
+                    <f:ajax render="cmdForm msgs"/>
+                </h:commandButton>
+            </h:column>
+        </h:dataTable>
+
+        <h3>Create New Command</h3>
+        <h:panelGrid columns="2" cellpadding="5">
+            <h:outputLabel for="newName" value="Name:"/>
+            <h:inputText id="newName"
+                         value="#{commandBean.newCommand.name}"/>
+            <h:outputLabel/>
+            <h:commandButton value="Create"
+                             action="#{commandBean.create}">
+                <f:ajax execute="@form"
+                        render="cmdForm msgs"/>
+            </h:commandButton>
+        </h:panelGrid>
+
+        <h:outputText rendered="#{not empty commandBean.selected}">
+            <h3>Update Command</h3>
+        </h:outputText>
+        <h:panelGrid columns="2" cellpadding="5"
+                     rendered="#{not empty commandBean.selected}">
+            <h:outputLabel for="updId" value="ID:"/>
+            <h:outputText id="updId"
+                          value="#{commandBean.selected.id}"/>
+
+            <h:outputLabel for="updName" value="New Name:"/>
+            <h:inputText id="updName"
+                         value="#{commandBean.selected.name}"/>
+
+            <h:outputLabel for="updVer" value="Version:"/>
+            <h:outputText id="updVer"
+                          value="#{commandBean.selected.version}"/>
+
+            <h:outputLabel/>
+            <h:commandButton value="Update"
+                             action="#{commandBean.update}">
+                <f:ajax execute="@form"
+                        render="cmdForm msgs"/>
+            </h:commandButton>
+        </h:panelGrid>
+    </h:form>
+
+    <hr/>
+
+    <h:form id="asyncForm">
+        <h1>Async Calculation</h1>
+        <h:panelGrid columns="2" cellpadding="5">
+            <h:outputLabel for="num" value="Input:"/>
+            <h:inputText id="num" value="#{asyncBean.number}">
+                <f:validateLongRange minimum="0"/>
+            </h:inputText>
+
+            <h:outputLabel/>
+            <h:commandButton value="Calculate" action="#{asyncBean.start}">
+                <f:ajax execute="@form" render="asyncForm msgs"/>
+            </h:commandButton>
+
+            <h:outputLabel/>
+            <h:commandButton value="Check" action="#{asyncBean.check}">
+                <f:ajax execute="@form" render="asyncForm msgs"/>
+            </h:commandButton>
+
+            <h:outputLabel value="Result:"/>
+            <h:outputText value="#{asyncBean.result}"/>
+        </h:panelGrid>
+    </h:form>
+
+    <hr/>
+
+    <h:form>
+        <h1>CDI</h1>
+        <h:commandButton value="Invoke Hello" action="#{cdiDemoBean.callHello}"/>
+        <h:outputText value="#{cdiDemoBean.output}"/>
+    </h:form>
+
+</h:body>
+</html>
